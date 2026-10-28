@@ -1,0 +1,2336 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>受電対応AI化のご提案｜株式会社コミクス</title>
+    <meta
+      name="description"
+      content="SPSグループ様の代表電話の一次受付を、Claude Opus 5.5 と Gemini 3.8 Flash TTS で AI 化するご提案（ヒアリング前の方向性）。仕組み・通話の流れ・進め方・費用をまとめました。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap"
+    />
+    <style>
+      /* 色の意味: 青=AIが受け持つこと / 朱=人が引き継ぐこと。全セクションでこの対応を崩さない */
+      :root {
+        color-scheme: light;
+        --ink: #221714;
+        --paper: #ffffff;
+        --mist: #eef3f8;
+        --rule: #d5dde5;
+        --muted: #45505b;
+        --blue: #0068b6;
+        --blue-deep: #0057aa;
+        --blue-tint: #e6f0f8;
+        --shu: #fb4113;
+        --shu-fill: #d63a0f;
+        --shu-text: #b52d08;
+        --shu-tint: #fdeee8;
+        --panel: #1d1512;
+        --panel-line: #3d302b;
+        --panel-text: #f4eeea;
+        --panel-dim: #cdbfb8;
+        --panel-blue: #6fb6ee;
+        --panel-shu: #ff8a66;
+        --display:
+          "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+        --body:
+          "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 17px;
+        line-height: 1.85;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: var(--blue-deep);
+      }
+      :focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 2px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-inline: 16px;
+      }
+      @media (min-width: 720px) {
+        .wrap {
+          padding-inline: 32px;
+        }
+      }
+      .ai {
+        color: var(--blue);
+      }
+      .hito {
+        color: var(--shu-text);
+      }
+      .chip {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 6px 10px 5px;
+        border-radius: 999px;
+        white-space: nowrap;
+        color: #fff;
+      }
+      .chip.ai {
+        background: var(--blue);
+        color: #fff;
+      }
+      .chip.hito {
+        background: var(--shu-fill);
+        color: #fff;
+      }
+      .chip.kasetsu {
+        background: transparent;
+        color: var(--muted);
+        border: 1.5px dashed var(--muted);
+        padding: 5px 9px 4px;
+      }
+
+      /* ===== Top bar ===== */
+      .topbar {
+        border-bottom: 1px solid var(--rule);
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .topbar .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 20px;
+        justify-content: space-between;
+        padding-block: 12px;
+      }
+      .topbar .from {
+        color: var(--blue);
+        letter-spacing: 0.06em;
+      }
+      .topbar .meta {
+        color: var(--muted);
+      }
+
+      /* ===== Hero ===== */
+      .hero {
+        background: var(--mist);
+        padding-block: 44px 56px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .hero-grid {
+        display: grid;
+        gap: 36px;
+        align-items: start;
+      }
+      @media (min-width: 940px) {
+        .hero-grid {
+          grid-template-columns: 1fr 1.02fr;
+          gap: 52px;
+          align-items: center;
+        }
+      }
+      .to {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .to small {
+        display: block;
+        font-size: 15px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .eyebrow {
+        display: inline-block;
+        margin: 18px 0 14px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--blue);
+        letter-spacing: 0.04em;
+      }
+      .hero h1 {
+        font-family: var(--display);
+        font-weight: 900;
+        font-size: clamp(34px, 5vw, 54px);
+        line-height: 1.38;
+        letter-spacing: 0.01em;
+        margin: 0 0 22px;
+      }
+      .hero h1 em {
+        font-style: normal;
+      }
+      .hero h1 span {
+        display: block;
+      }
+      .lede {
+        font-size: 18px;
+        max-width: 33em;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 22px;
+        margin-top: 24px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .legend div {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      /* ===== Signature: 受付ログ panel ===== */
+      .log {
+        background: var(--panel);
+        color: var(--panel-text);
+        border-radius: 12px;
+        padding: 20px clamp(16px, 2.6vw, 26px) 22px;
+        box-shadow: 0 24px 48px -28px rgba(34, 23, 20, 0.7);
+        min-width: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .log-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--panel-line);
+        margin-bottom: 6px;
+      }
+      .log-title {
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0.08em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .lamp {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--panel-shu);
+        box-shadow: 0 0 0 4px rgba(255, 138, 102, 0.18);
+        animation: blink 1.6s ease-in-out infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0.35;
+        }
+      }
+      .log-tag {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--panel-dim);
+        border: 1px solid var(--panel-line);
+        border-radius: 4px;
+        padding: 2px 8px;
+      }
+      .log ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .log li {
+        display: grid;
+        grid-template-columns: 4.6em 1fr;
+        gap: 10px;
+        padding: 9px 0;
+        border-bottom: 1px dashed var(--panel-line);
+        font-size: 16px;
+        line-height: 1.7;
+        animation: line-in 0.45s ease both;
+        animation-delay: calc(var(--i) * 260ms + 200ms);
+      }
+      .log li:last-child {
+        border-bottom: 0;
+      }
+      .log .t {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--panel-dim);
+        padding-top: 1px;
+      }
+      .log .who {
+        font-weight: 700;
+        margin-right: 6px;
+      }
+      .log .who.ai {
+        color: var(--panel-blue);
+      }
+      .log .who.tel {
+        color: var(--panel-text);
+      }
+      .log .sys {
+        color: var(--panel-dim);
+        font-weight: 700;
+      }
+      .slip {
+        margin-top: 14px;
+        border: 1.5px solid var(--panel-shu);
+        border-radius: 8px;
+        padding: 12px 14px 12px;
+        animation: line-in 0.45s ease both;
+        animation-delay: 2.1s;
+      }
+      .slip-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--panel-shu);
+        margin-bottom: 8px;
+      }
+      .slip-head .mono {
+        font-family: var(--mono);
+      }
+      .slip dl {
+        display: grid;
+        grid-template-columns: 5.2em 1fr;
+        gap: 4px 10px;
+        margin: 0;
+        font-size: 16px;
+      }
+      .slip dt {
+        color: var(--panel-dim);
+        font-weight: 700;
+      }
+      .slip dd {
+        margin: 0;
+      }
+      .log-note {
+        margin-top: 12px;
+        font-size: 14px;
+        color: var(--panel-dim);
+        line-height: 1.7;
+      }
+      @keyframes line-in {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .log li,
+        .slip,
+        .lamp {
+          animation: none;
+        }
+      }
+
+      /* ===== Sections ===== */
+      main section {
+        padding-block: 68px 0;
+      }
+      main section.last {
+        padding-bottom: 76px;
+      }
+      .kicker {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--blue);
+        letter-spacing: 0.06em;
+        margin-bottom: 4px;
+      }
+      h2 {
+        font-family: var(--display);
+        font-weight: 900;
+        font-size: clamp(26px, 3.3vw, 34px);
+        line-height: 1.48;
+        margin: 0 0 14px;
+      }
+      h3 {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 21px;
+        line-height: 1.5;
+        margin: 0 0 8px;
+      }
+      .intro {
+        max-width: 46em;
+        margin-bottom: 28px;
+      }
+      .note {
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      /* 分かっていること */
+      .facts {
+        display: grid;
+        gap: 0;
+        border-top: 2px solid var(--ink);
+      }
+      .facts > div {
+        display: grid;
+        gap: 2px 20px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      @media (min-width: 720px) {
+        .facts > div {
+          grid-template-columns: 11em 1fr;
+        }
+      }
+      .facts dt {
+        font-weight: 700;
+      }
+      .facts dd {
+        margin: 0;
+      }
+      .facts .src {
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .assume {
+        margin-top: 22px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        background: var(--mist);
+        border-radius: 8px;
+        padding: 16px 20px;
+        max-width: 54em;
+      }
+
+      /* 4つの入口 */
+      .callers {
+        display: grid;
+        gap: 18px;
+      }
+      @media (min-width: 860px) {
+        .callers {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .caller {
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 20px 22px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+        break-inside: avoid;
+      }
+      .caller-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: baseline;
+        flex-wrap: wrap;
+      }
+      .caller h3 {
+        margin: 0;
+      }
+      .caller .who-says {
+        font-size: 16px;
+        color: var(--muted);
+      }
+      .split {
+        display: grid;
+        gap: 8px;
+      }
+      .split > div {
+        display: grid;
+        grid-template-columns: 2.2em 1fr;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 6px;
+      }
+      .split .a {
+        background: var(--blue-tint);
+      }
+      .split .h {
+        background: var(--shu-tint);
+      }
+      .split b {
+        font-size: 15px;
+        line-height: 1.85;
+      }
+      .split .a b {
+        color: var(--blue);
+      }
+      .split .h b {
+        color: var(--shu-text);
+      }
+      .urgent {
+        margin-top: 18px;
+        display: grid;
+        gap: 6px 18px;
+        border-left: 6px solid var(--shu-fill);
+        background: var(--shu-tint);
+        padding: 16px 20px;
+        border-radius: 0 8px 8px 0;
+      }
+      @media (min-width: 860px) {
+        .urgent {
+          grid-template-columns: 13em 1fr;
+          align-items: center;
+        }
+      }
+      .urgent strong {
+        color: var(--shu-text);
+        font-size: 18px;
+      }
+
+      /* 仕組み */
+      .parts {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 26px;
+      }
+      @media (min-width: 720px) {
+        .parts {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+      .part {
+        border-top: 4px solid var(--rule);
+        padding-top: 10px;
+      }
+      .part.given {
+        border-top-color: var(--blue);
+      }
+      .part .role {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      .part.given .role {
+        color: var(--blue);
+      }
+      .part h3 {
+        font-size: 19px;
+        margin: 2px 0 4px;
+      }
+      .part p {
+        font-size: 16px;
+      }
+      .diagram {
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        padding: 18px;
+        background: #fbfcfd;
+      }
+      .diagram svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .diagram .cap {
+        margin-top: 10px;
+      }
+      .sys-desktop {
+        display: none;
+      }
+      @media (min-width: 900px) {
+        .sys-desktop {
+          display: block;
+        }
+        .sys-mobile {
+          display: none;
+        }
+      }
+      .sys-mobile ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 22px;
+      }
+      .sys-mobile li {
+        position: relative;
+        border: 1.5px solid var(--ink);
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: var(--paper);
+      }
+      .sys-mobile li:not(:last-child)::after {
+        content: "↓";
+        position: absolute;
+        left: 50%;
+        bottom: -22px;
+        transform: translateX(-50%);
+        font-weight: 700;
+        color: var(--muted);
+        line-height: 22px;
+      }
+      .sys-mobile li.brain {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+      .sys-mobile li.person {
+        border-color: var(--shu-fill);
+        background: var(--shu-tint);
+      }
+      .sys-mobile b {
+        display: block;
+        font-size: 17px;
+      }
+      .sys-mobile span {
+        font-size: 16px;
+      }
+
+      /* 通話の流れ */
+      .flow {
+        display: grid;
+        justify-items: center;
+        gap: 0;
+      }
+      .node {
+        width: min(100%, 560px);
+        border: 1.5px solid var(--ink);
+        border-radius: 8px;
+        padding: 10px 16px;
+        background: var(--paper);
+        text-align: center;
+        font-weight: 700;
+        line-height: 1.6;
+        break-inside: avoid;
+      }
+      .node small {
+        display: block;
+        font-weight: 400;
+        font-size: 15px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .node.ai-node {
+        border-color: var(--blue);
+        background: var(--blue-tint);
+      }
+      .node.start {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+        width: auto;
+        padding-inline: 26px;
+      }
+      .node.start small {
+        color: #e8e1dd;
+      }
+      .arrow {
+        width: 2px;
+        height: 26px;
+        background: var(--ink);
+        position: relative;
+      }
+      .arrow::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -1px;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top: 8px solid var(--ink);
+        border-bottom: 0;
+      }
+      .branches {
+        width: 100%;
+        display: grid;
+        gap: 12px;
+        padding-top: 0;
+        position: relative;
+      }
+      @media (min-width: 900px) {
+        .branches {
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 12px;
+          padding-top: 24px;
+        }
+        .branches::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 10%;
+          right: 10%;
+          height: 2px;
+          background: var(--ink);
+        }
+        .branch::before {
+          content: "";
+          position: absolute;
+          top: -24px;
+          left: 50%;
+          width: 2px;
+          height: 24px;
+          background: var(--ink);
+        }
+      }
+      .branch {
+        position: relative;
+        border: 1.5px solid var(--blue);
+        border-radius: 8px;
+        padding: 12px 14px;
+        background: var(--paper);
+        min-width: 0;
+        break-inside: avoid;
+      }
+      .branch b {
+        display: block;
+        font-size: 17px;
+        color: var(--blue);
+        margin-bottom: 4px;
+        line-height: 1.5;
+      }
+      .branch p {
+        font-size: 16px;
+        line-height: 1.7;
+      }
+      .branch.esc {
+        border-color: var(--shu-fill);
+        background: var(--shu-tint);
+      }
+      .branch.esc b {
+        color: var(--shu-text);
+      }
+      .merge {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-top: 12px;
+      }
+      .merge-label {
+        font-size: 15px;
+        color: var(--muted);
+        font-weight: 700;
+        text-align: center;
+      }
+
+      /* 設計の3本柱 */
+      .pillars {
+        display: grid;
+        gap: 18px;
+      }
+      @media (min-width: 960px) {
+        .pillars {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      .pillar {
+        border-top: 3px solid var(--ink);
+        padding-top: 14px;
+        min-width: 0;
+        break-inside: avoid;
+      }
+      .pillar ul {
+        margin: 6px 0 0;
+        padding-left: 1.2em;
+      }
+      .pillar li + li {
+        margin-top: 6px;
+      }
+      .pillar.never {
+        border-top-color: var(--shu-fill);
+      }
+      .pillar.never h3 {
+        color: var(--shu-text);
+      }
+
+      /* 進め方 */
+      .steps {
+        display: grid;
+        gap: 16px;
+        counter-reset: step;
+      }
+      @media (min-width: 960px) {
+        .steps {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 14px;
+        }
+      }
+      .step {
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 0 0 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        break-inside: avoid;
+      }
+      .step-bar {
+        background: var(--ink);
+        color: #fff;
+        padding: 10px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .step-bar .no {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+      }
+      .step-bar .dur {
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .step.pilot .step-bar {
+        background: var(--blue);
+      }
+      .step h3 {
+        padding: 12px 16px 0;
+        margin: 0 0 6px;
+      }
+      .step p,
+      .step ul {
+        padding-inline: 16px;
+        font-size: 16px;
+        line-height: 1.75;
+      }
+      .step ul {
+        margin: 0;
+        padding-left: 34px;
+      }
+      .step .gate {
+        margin: 12px 16px 0;
+        padding: 10px 12px;
+        border-radius: 6px;
+        background: var(--mist);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+      .step .gate b {
+        display: block;
+        color: var(--blue);
+      }
+
+      /* 費用 */
+      .price {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+      }
+      .price th,
+      .price td {
+        text-align: left;
+        vertical-align: top;
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .price thead th {
+        border-bottom: 2px solid var(--ink);
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .price .item {
+        font-weight: 700;
+        font-size: 17px;
+        white-space: nowrap;
+      }
+      .price .yen {
+        font-family: var(--display);
+        font-weight: 900;
+        font-size: 22px;
+        white-space: nowrap;
+      }
+      .price .yen small {
+        display: block;
+        font-family: var(--body);
+        font-weight: 400;
+        font-size: 15px;
+        color: var(--muted);
+        white-space: normal;
+      }
+      .price tr.actual .yen {
+        font-size: 19px;
+      }
+      @media (max-width: 760px) {
+        .price thead {
+          display: none;
+        }
+        .price,
+        .price tbody,
+        .price tr,
+        .price td {
+          display: block;
+          width: 100%;
+        }
+        .price tr {
+          border-bottom: 1px solid var(--rule);
+          padding: 12px 0;
+        }
+        .price td {
+          border: 0;
+          padding: 4px 0;
+        }
+      }
+      .honest {
+        margin-top: 20px;
+        border-left: 6px solid var(--blue);
+        background: var(--blue-tint);
+        padding: 14px 18px;
+        border-radius: 0 8px 8px 0;
+        max-width: 54em;
+      }
+
+      /* 試算 */
+      .calc {
+        margin-top: 40px;
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        padding: 22px clamp(16px, 3vw, 28px) 24px;
+        background: #fbfcfd;
+      }
+      .calc-grid {
+        display: grid;
+        gap: 24px;
+      }
+      @media (min-width: 900px) {
+        .calc-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 36px;
+        }
+      }
+      .calc label {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 2px 12px;
+        align-items: center;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .calc input[type="number"] {
+        width: 6.4em;
+        font: inherit;
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 17px;
+        padding: 6px 8px;
+        border: 1.5px solid var(--ink);
+        border-radius: 6px;
+        text-align: right;
+        background: #fff;
+        color: var(--ink);
+      }
+      .calc label small {
+        grid-column: 1 / -1;
+        font-weight: 400;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .out {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+      .out div {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--rule);
+        flex-wrap: wrap;
+      }
+      .out span {
+        font-weight: 700;
+      }
+      .out output {
+        font-family: var(--display);
+        font-weight: 900;
+        font-size: 26px;
+        color: var(--blue);
+        white-space: nowrap;
+      }
+      .out output small {
+        font-family: var(--body);
+        font-size: 16px;
+        font-weight: 700;
+        margin-left: 4px;
+      }
+
+      /* 次の一歩 */
+      .next {
+        display: grid;
+        gap: 28px;
+      }
+      @media (min-width: 900px) {
+        .next {
+          grid-template-columns: 1.15fr 1fr;
+          gap: 44px;
+        }
+      }
+      .checks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 2px solid var(--ink);
+      }
+      .checks li {
+        display: grid;
+        grid-template-columns: 1.6em 1fr;
+        gap: 8px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .checks li::before {
+        content: "";
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--ink);
+        border-radius: 3px;
+        margin-top: 6px;
+      }
+      .contact {
+        background: var(--mist);
+        border-radius: 12px;
+        padding: 24px 26px;
+        align-self: start;
+      }
+      .contact .sign {
+        font-weight: 700;
+        font-size: 18px;
+        margin-top: 14px;
+        line-height: 1.6;
+      }
+      .contact .sign small {
+        display: block;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .contact ul {
+        list-style: none;
+        margin: 12px 0 0;
+        padding: 0;
+        font-size: 16px;
+      }
+      .contact li {
+        padding: 3px 0;
+        overflow-wrap: anywhere;
+      }
+
+      footer {
+        border-top: 1px solid var(--rule);
+        padding-block: 22px 30px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      footer .wrap {
+        display: grid;
+        gap: 6px;
+      }
+
+      /* ===== Print ===== */
+      @page {
+        size: A4;
+        margin: 14mm 12mm;
+      }
+      @media print {
+        body {
+          font-size: 12pt;
+        }
+        .log,
+        .diagram,
+        .pillar,
+        .calc {
+          break-inside: avoid;
+        }
+        .hero {
+          padding-block: 18px 24px;
+        }
+        main section {
+          padding-block: 28px 0;
+        }
+        .log li,
+        .slip {
+          animation: none;
+        }
+        .sys-desktop {
+          display: block;
+        }
+        .sys-mobile {
+          display: none;
+        }
+        .calc input[type="number"] {
+          border-color: var(--rule);
+        }
+        h2 {
+          break-after: avoid;
+        }
+        a {
+          color: var(--ink);
+          text-decoration: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="wrap">
+        <span class="from">株式会社コミクス</span>
+        <span class="meta"
+          >2026年10月28日｜ご提案の方向性（ヒアリング前の仮説を含みます）</span
+        >
+      </div>
+    </div>
+
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="to">
+            <small>SPSグループ</small>
+            三浦 巧麻 様
+          </p>
+          <p class="eyebrow">代表電話の受電対応を AI 化するご提案</p>
+          <h1>
+            <span>一次受付は、<em class="ai">AIへ。</em></span>
+            <span>判断は、<em class="hito">人へ。</em></span>
+          </h1>
+          <p class="lede">
+            代表電話にかかってくる応募・当日の連絡・ご依頼の電話に、まず AI
+            が応対します。用件を聞き取って受付票にまとめ、担当者へ渡すところまでが
+            AI
+            の仕事です。料金・契約・人員の確約や、事故・苦情への対応は、これまでどおり人が行います。
+          </p>
+          <div class="legend" aria-label="色の凡例">
+            <div><span class="chip ai">青</span>AI が受け持つこと</div>
+            <div><span class="chip hito">朱</span>人が引き継ぐこと</div>
+          </div>
+        </div>
+
+        <figure
+          class="log"
+          aria-label="AI が受けた電話の記録のイメージ"
+          style="margin: 0"
+        >
+          <div class="log-head">
+            <span class="log-title"
+              ><span class="lamp" aria-hidden="true"></span>受付ログ</span
+            >
+            <span class="log-tag">イメージ｜営業時間外の着信</span>
+          </div>
+          <ol>
+            <li style="--i: 0">
+              <span class="t">05:42</span>
+              <span class="sys">着信　代表番号（時間外のため AI へ転送）</span>
+            </li>
+            <li style="--i: 1">
+              <span class="t">05:42</span>
+              <span
+                ><span class="who ai">AI</span
+                >お電話ありがとうございます。シリアス プロ サポートです。AI
+                がお受けし、通話を記録しています。ご用件をどうぞ。</span
+              >
+            </li>
+            <li style="--i: 2">
+              <span class="t">05:42</span>
+              <span
+                ><span class="who tel">隊員</span
+                >田中です。熱が出てしまって、今日の現場に行けそうにありません。</span
+              >
+            </li>
+            <li style="--i: 3">
+              <span class="t">05:43</span>
+              <span
+                ><span class="who ai">AI</span
+                >承知しました。本日の現場名と、開始時刻を教えていただけますか。</span
+              >
+            </li>
+            <li style="--i: 4">
+              <span class="t">05:43</span>
+              <span
+                ><span class="who tel">隊員</span
+                >八丁堀の道路工事で、8時からです。</span
+              >
+            </li>
+            <li style="--i: 5">
+              <span class="t">05:44</span>
+              <span
+                ><span class="who ai">AI</span
+                >八丁堀の道路工事、8時からですね。担当者にすぐ伝えます。お大事になさってください。</span
+              >
+            </li>
+          </ol>
+          <div class="slip">
+            <div class="slip-head">
+              <span>受付票 → 管制担当へ通知</span
+              ><span class="mono">05:44</span>
+            </div>
+            <dl>
+              <dt>用件</dt>
+              <dd>当日欠勤（体調不良）</dd>
+              <dt>連絡者</dt>
+              <dd>田中（着信番号を記録）</dd>
+              <dt>現場</dt>
+              <dd>八丁堀・道路工事　8:00 開始</dd>
+              <dt>至急度</dt>
+              <dd>高（開始まで 2 時間 16 分・欠員補充が必要）</dd>
+            </dl>
+          </div>
+          <p class="log-note">会話・氏名・現場はすべて説明用の架空の例です。</p>
+        </figure>
+      </div>
+    </header>
+
+    <main>
+      <!-- 1. 分かっていること -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">前提</p>
+          <h2>貴社サイトから読み取れたこと</h2>
+          <p class="intro">
+            ご提案の土台にした事実です。いずれも貴社ホームページの掲載内容（2026年10月28日確認）によります。
+          </p>
+          <dl class="facts">
+            <div>
+              <dt>代表電話</dt>
+              <dd>
+                03-6222-9713。受付は 9:00〜17:00
+                <span class="src">（会社案内・警備業ページ）</span>
+              </dd>
+            </div>
+            <div>
+              <dt>応募の窓口</dt>
+              <dd>
+                「働きたい方へ」ページでも、問い合わせ先は同じ代表電話
+                <span class="src">（働きたい方へ）</span>
+              </dd>
+            </div>
+            <div>
+              <dt>ご依頼の流れ</dt>
+              <dd>
+                電話またはメールでご相談 →
+                営業担当がお見積り。メールの場合も担当者から電話で連絡
+                <span class="src">（企業の方へ）</span>
+              </dd>
+            </div>
+            <div>
+              <dt>事業</dt>
+              <dd>
+                警備業（交通誘導・イベント・高速道路・施設・列車見張
+                ほか）と、工場・AD・SE の人材派遣
+                <span class="src">（警備業ページほか）</span>
+              </dd>
+            </div>
+            <div>
+              <dt>拠点と人員</dt>
+              <dd>
+                本社（中央区新川）・新宿事業所・成田支社・宇都宮支社ほか。従業員
+                670 名（2025年・グループ各社合計）
+                <span class="src">（会社案内）</span>
+              </dd>
+            </div>
+          </dl>
+          <div class="assume">
+            <span class="chip kasetsu">仮説</span>
+            <p>
+              ここから先の「どんな電話が何件来ているか」は、お打ち合わせ前の仮説です。実際の着信の内訳は、最初の
+              2 週間（受電診断）で記録して確かめます。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 4つの入口 -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">誰から、どんな電話が来るか</p>
+          <h2>代表電話の 4 つの入口と、AI が受け持つ範囲</h2>
+          <p class="intro">
+            警備と人材派遣の両方を営む会社の代表電話には、立場の違う 4
+            種類の電話が混ざっていると考えています。AI
+            はどの電話でも「聞き取って、まとめて、渡す」までを担当し、決めることは人に渡します。
+          </p>
+          <div class="callers">
+            <article class="caller">
+              <div class="caller-top">
+                <h3>働きたい方</h3>
+                <span class="chip kasetsu">仮説</span>
+              </div>
+              <p class="who-says">
+                「警備の仕事に応募したい」「寮はありますか」
+              </p>
+              <div class="split">
+                <div class="a">
+                  <b>AI</b>
+                  <p>
+                    募集職種・寮・研修（3日間・20時間）など、サイトに載っている範囲でご案内。面接の希望日と連絡先を聞き取る
+                  </p>
+                </div>
+                <div class="h">
+                  <b>人</b>
+                  <p>面接日の確定、採否の判断</p>
+                </div>
+              </div>
+            </article>
+            <article class="caller">
+              <div class="caller-top">
+                <h3>隊員・派遣スタッフ</h3>
+                <span class="chip kasetsu">仮説</span>
+              </div>
+              <p class="who-says">
+                「今日休みます」「少し遅れます」「現場に着きました」
+              </p>
+              <div class="split">
+                <div class="a">
+                  <b>AI</b>
+                  <p>
+                    欠勤・遅刻などの連絡を聞き取り、至急度をつけて担当者へ通知。上番・下番の報告は、専用の打刻サービスとどちらが合うかを診断で見極める
+                  </p>
+                </div>
+                <div class="h">
+                  <b>人</b>
+                  <p>欠員の補充手配、現場・お客様への連絡</p>
+                </div>
+              </div>
+            </article>
+            <article class="caller">
+              <div class="caller-top">
+                <h3>お客様（ご依頼）</h3>
+                <span class="chip kasetsu">仮説</span>
+              </div>
+              <p class="who-says">「来週、交通誘導を 4 名お願いしたい」</p>
+              <div class="split">
+                <div class="a">
+                  <b>AI</b>
+                  <p>
+                    日時・場所・人数・業務の種類・ご担当者を聞き取り、見積依頼票にして営業担当へ。折り返しの時間をお伝えする
+                  </p>
+                </div>
+                <div class="h">
+                  <b>人</b>
+                  <p>お見積り、契約、人員の確約</p>
+                </div>
+              </div>
+            </article>
+            <article class="caller">
+              <div class="caller-top">
+                <h3>その他</h3>
+                <span class="chip kasetsu">仮説</span>
+              </div>
+              <p class="who-says">取引先からの確認、各種の営業電話など</p>
+              <div class="split">
+                <div class="a">
+                  <b>AI</b>
+                  <p>
+                    用件と連絡先を記録し、担当者が必要なものだけを通知。営業電話は丁寧にお断りして記録
+                  </p>
+                </div>
+                <div class="h">
+                  <b>人</b>
+                  <p>必要に応じて折り返し</p>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="urgent">
+            <strong>事故・現場のトラブル・苦情</strong>
+            <p>
+              AI
+              は会社名・場所・連絡先だけを確認し、すぐに担当者の携帯電話へ転送します。AI
+              が状況を判断したり、なだめたりはしません。「人と話したい」と言われたときも同じです。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 仕組み -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">仕組み</p>
+          <h2>ご指定の 2 つに、電話に必要な 2 つを足します</h2>
+          <p class="intro">
+            Gemini 3.8 Flash TTS
+            は「声を出す」部品なので、電話を自動化するには、相手の声を聞き取る部品と電話回線も必要です。全体は次の
+            4 つでできています。
+          </p>
+          <div class="parts">
+            <div class="part">
+              <p class="role">回線</p>
+              <h3>クラウド電話回線</h3>
+              <p>
+                今の代表番号はそのまま。AI
+                に回したい時間帯・条件の電話だけを転送します。回線は貴社名義で開設します
+              </p>
+            </div>
+            <div class="part">
+              <p class="role">耳</p>
+              <h3>音声認識</h3>
+              <p>
+                相手の声を、話しているそばから文字にします。電話の音声に強いものを、実際の録音で比べて選びます
+              </p>
+            </div>
+            <div class="part given">
+              <p class="role">頭脳｜ご指定</p>
+              <h3>Claude Opus 5.5</h3>
+              <p>
+                用件を理解し、返答の文章と受付票を作り、転送するかを決めます
+              </p>
+            </div>
+            <div class="part given">
+              <p class="role">口｜ご指定</p>
+              <h3>Gemini 3.8 Flash TTS</h3>
+              <p>返答の文章を、落ち着いた自然な日本語の声にします</p>
+            </div>
+          </div>
+
+          <div class="diagram">
+            <div class="sys-desktop">
+              <svg
+                viewBox="0 0 1060 470"
+                role="img"
+                aria-labelledby="sysTitle sysDesc"
+              >
+                <title id="sysTitle">受電 AI のシステム構成</title>
+                <desc id="sysDesc">
+                  電話の相手の声は、電話回線から音声認識で文字になり、Claude
+                  Opus 5.5 が返答と受付票を作る。返答は Gemini 3.8 Flash TTS
+                  で声になり、回線を通って相手に返る。Opus 5.5
+                  は社内の知識を参照し、受付票を担当者へ通知、必要なら電話を転送する。
+                </desc>
+                <defs>
+                  <marker
+                    id="ah"
+                    viewBox="0 0 10 10"
+                    refX="9"
+                    refY="5"
+                    markerWidth="8"
+                    markerHeight="8"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M0,0 L10,5 L0,10 z" fill="#221714" />
+                  </marker>
+                  <marker
+                    id="ahs"
+                    viewBox="0 0 10 10"
+                    refX="9"
+                    refY="5"
+                    markerWidth="8"
+                    markerHeight="8"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M0,0 L10,5 L0,10 z" fill="#d63a0f" />
+                  </marker>
+                </defs>
+                <g
+                  font-family="BIZ UDPGothic, Hiragino Sans, Yu Gothic, sans-serif"
+                  fill="#221714"
+                >
+                  <!-- caller -->
+                  <rect
+                    x="12"
+                    y="180"
+                    width="150"
+                    height="112"
+                    rx="10"
+                    fill="#fff"
+                    stroke="#221714"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="87"
+                    y="224"
+                    text-anchor="middle"
+                    font-size="19"
+                    font-weight="700"
+                  >
+                    お電話の相手
+                  </text>
+                  <text
+                    x="87"
+                    y="252"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#45505b"
+                  >
+                    応募者・隊員
+                  </text>
+                  <text
+                    x="87"
+                    y="274"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#45505b"
+                  >
+                    お客様
+                  </text>
+                  <!-- line -->
+                  <rect
+                    x="208"
+                    y="180"
+                    width="150"
+                    height="112"
+                    rx="10"
+                    fill="#fff"
+                    stroke="#221714"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="283"
+                    y="220"
+                    text-anchor="middle"
+                    font-size="15"
+                    font-weight="700"
+                    fill="#45505b"
+                  >
+                    回線
+                  </text>
+                  <text
+                    x="283"
+                    y="248"
+                    text-anchor="middle"
+                    font-size="19"
+                    font-weight="700"
+                  >
+                    電話回線
+                  </text>
+                  <text
+                    x="283"
+                    y="274"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#45505b"
+                  >
+                    代表番号から転送
+                  </text>
+                  <line
+                    x1="166"
+                    y1="236"
+                    x2="204"
+                    y2="236"
+                    stroke="#221714"
+                    stroke-width="2"
+                    marker-start="url(#ah)"
+                    marker-end="url(#ah)"
+                  />
+                  <!-- ear -->
+                  <rect
+                    x="410"
+                    y="40"
+                    width="240"
+                    height="100"
+                    rx="10"
+                    fill="#fff"
+                    stroke="#221714"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="530"
+                    y="74"
+                    text-anchor="middle"
+                    font-size="15"
+                    font-weight="700"
+                    fill="#45505b"
+                  >
+                    耳
+                  </text>
+                  <text
+                    x="530"
+                    y="102"
+                    text-anchor="middle"
+                    font-size="19"
+                    font-weight="700"
+                  >
+                    音声認識
+                  </text>
+                  <text
+                    x="530"
+                    y="127"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#45505b"
+                  >
+                    声を文字にする
+                  </text>
+                  <!-- mouth -->
+                  <rect
+                    x="410"
+                    y="332"
+                    width="240"
+                    height="100"
+                    rx="10"
+                    fill="#e6f0f8"
+                    stroke="#0068b6"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="530"
+                    y="366"
+                    text-anchor="middle"
+                    font-size="15"
+                    font-weight="700"
+                    fill="#0068b6"
+                  >
+                    口｜ご指定
+                  </text>
+                  <text
+                    x="530"
+                    y="394"
+                    text-anchor="middle"
+                    font-size="18"
+                    font-weight="700"
+                  >
+                    Gemini 3.8 Flash TTS
+                  </text>
+                  <text
+                    x="530"
+                    y="419"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#45505b"
+                  >
+                    返答を声にする
+                  </text>
+                  <!-- brain -->
+                  <rect
+                    x="680"
+                    y="160"
+                    width="220"
+                    height="152"
+                    rx="12"
+                    fill="#0068b6"
+                  />
+                  <text
+                    x="790"
+                    y="196"
+                    text-anchor="middle"
+                    font-size="15"
+                    font-weight="700"
+                    fill="#e6f0f8"
+                  >
+                    頭脳｜ご指定
+                  </text>
+                  <text
+                    x="790"
+                    y="228"
+                    text-anchor="middle"
+                    font-size="22"
+                    font-weight="700"
+                    fill="#fff"
+                  >
+                    Claude Opus 5.5
+                  </text>
+                  <text
+                    x="790"
+                    y="262"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#fff"
+                  >
+                    用件を理解し、
+                  </text>
+                  <text
+                    x="790"
+                    y="286"
+                    text-anchor="middle"
+                    font-size="16"
+                    fill="#fff"
+                  >
+                    返答と受付票を作る
+                  </text>
+                  <!-- knowledge -->
+                  <rect
+                    x="930"
+                    y="40"
+                    width="120"
+                    height="120"
+                    rx="10"
+                    fill="#fff"
+                    stroke="#221714"
+                    stroke-width="2"
+                    stroke-dasharray="6 5"
+                  />
+                  <text
+                    x="990"
+                    y="78"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="700"
+                  >
+                    社内の知識
+                  </text>
+                  <text
+                    x="990"
+                    y="104"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#45505b"
+                  >
+                    拠点・寮・研修
+                  </text>
+                  <text
+                    x="990"
+                    y="126"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#45505b"
+                  >
+                    よくある質問
+                  </text>
+                  <text
+                    x="990"
+                    y="148"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#45505b"
+                  >
+                    登録者一覧
+                  </text>
+                  <!-- person -->
+                  <rect
+                    x="930"
+                    y="312"
+                    width="120"
+                    height="120"
+                    rx="10"
+                    fill="#fdeee8"
+                    stroke="#d63a0f"
+                    stroke-width="2"
+                  />
+                  <text
+                    x="990"
+                    y="348"
+                    text-anchor="middle"
+                    font-size="17"
+                    font-weight="700"
+                    fill="#b52d08"
+                  >
+                    担当者へ
+                  </text>
+                  <text
+                    x="990"
+                    y="376"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#221714"
+                  >
+                    受付票の通知
+                  </text>
+                  <text
+                    x="990"
+                    y="400"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#221714"
+                  >
+                    至急は電話を
+                  </text>
+                  <text
+                    x="990"
+                    y="422"
+                    text-anchor="middle"
+                    font-size="15"
+                    fill="#221714"
+                  >
+                    そのまま転送
+                  </text>
+                  <!-- loop arrows -->
+                  <path
+                    d="M300,176 C300,110 330,90 404,90"
+                    fill="none"
+                    stroke="#221714"
+                    stroke-width="2"
+                    marker-end="url(#ah)"
+                  />
+                  <text x="270" y="142" font-size="16" font-weight="700">
+                    声
+                  </text>
+                  <path
+                    d="M654,90 C734,90 790,110 790,154"
+                    fill="none"
+                    stroke="#221714"
+                    stroke-width="2"
+                    marker-end="url(#ah)"
+                  />
+                  <text x="688" y="76" font-size="16" font-weight="700">
+                    文字
+                  </text>
+                  <path
+                    d="M790,316 C790,360 734,382 656,382"
+                    fill="none"
+                    stroke="#0068b6"
+                    stroke-width="2"
+                    marker-end="url(#ah)"
+                  />
+                  <text
+                    x="664"
+                    y="412"
+                    font-size="16"
+                    font-weight="700"
+                    fill="#0068b6"
+                  >
+                    返答の文章
+                  </text>
+                  <path
+                    d="M404,382 C330,382 300,360 300,296"
+                    fill="none"
+                    stroke="#0068b6"
+                    stroke-width="2"
+                    marker-end="url(#ah)"
+                  />
+                  <text
+                    x="270"
+                    y="352"
+                    font-size="16"
+                    font-weight="700"
+                    fill="#0068b6"
+                  >
+                    声
+                  </text>
+                  <!-- knowledge & person -->
+                  <path
+                    d="M926,124 C900,140 890,160 882,166"
+                    fill="none"
+                    stroke="#221714"
+                    stroke-width="2"
+                    stroke-dasharray="6 5"
+                    marker-end="url(#ah)"
+                  />
+                  <path
+                    d="M884,306 C896,316 910,330 924,340"
+                    fill="none"
+                    stroke="#d63a0f"
+                    stroke-width="2.4"
+                    marker-end="url(#ahs)"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div class="sys-mobile">
+              <ol>
+                <li><b>お電話の相手</b><span>応募者・隊員・お客様</span></li>
+                <li>
+                  <b>回線｜電話回線</b><span>代表番号から AI へ転送</span>
+                </li>
+                <li><b>耳｜音声認識</b><span>声を文字にする</span></li>
+                <li class="brain">
+                  <b>頭脳｜Claude Opus 5.5（ご指定）</b
+                  ><span>社内の知識を参照して、返答と受付票を作る</span>
+                </li>
+                <li>
+                  <b>口｜Gemini 3.8 Flash TTS（ご指定）</b
+                  ><span>返答を声にして、回線から相手へ返す</span>
+                </li>
+                <li class="person">
+                  <b>担当者へ</b
+                  ><span>受付票を通知。至急の電話はそのまま転送</span>
+                </li>
+              </ol>
+            </div>
+            <p class="cap note">
+              Opus 5.5
+              が参照する「社内の知識」は、貴社にご用意いただく情報（拠点・寮・研修・よくある質問など）です。登録者一覧との照合は、本番拡大の段階で検討します。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 通話の流れ -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">1 本の電話の流れ</p>
+          <h2>受けてから担当者に渡すまで</h2>
+          <p class="intro">
+            AI は用件を 4
+            つに振り分け、それぞれ決まった項目を聞き取ります。判断に迷ったときは、いつでも人へ渡します。
+          </p>
+          <div class="flow" role="list">
+            <div class="node start" role="listitem">
+              着信<small>代表番号から転送された電話</small>
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="node ai-node" role="listitem">
+              ごあいさつ<small
+                >社名・AI
+                が応対していること・録音していることをお伝えする（事前に音声化した定型文）</small
+              >
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="node ai-node" role="listitem">
+              ご用件を伺い、4 つに振り分ける
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="branches" role="listitem">
+              <div class="branch">
+                <b>応募・お問い合わせ</b>
+                <p>ご案内のあと、面接の希望日と連絡先を伺う</p>
+              </div>
+              <div class="branch">
+                <b>当日の連絡</b>
+                <p>氏名・現場・開始時刻・理由を伺う</p>
+              </div>
+              <div class="branch">
+                <b>警備・派遣のご依頼</b>
+                <p>日時・場所・人数・業務・ご担当者を伺う</p>
+              </div>
+              <div class="branch">
+                <b>その他</b>
+                <p>ご用件と連絡先を伺う</p>
+              </div>
+              <div class="branch esc">
+                <b>事故・苦情など</b>
+                <p>
+                  判断に迷う電話や「人と話したい」ときも、最小限の確認だけで担当者の携帯へすぐ転送
+                </p>
+              </div>
+            </div>
+            <div class="merge">
+              <span class="merge-label">転送しなかった電話は、ここに合流</span>
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="node ai-node" role="listitem">
+              聞き取った内容を復唱して確認<small
+                >名前・日時・場所の聞き違いをここで防ぐ</small
+              >
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="node ai-node" role="listitem">
+              受付票を作り、担当者へ通知<small
+                >至急はすぐ、通常は担当者ごとにまとめて。通知先は貴社でお使いのチャットやメールに合わせる</small
+              >
+            </div>
+            <div class="arrow" aria-hidden="true"></div>
+            <div class="node start" role="listitem">
+              終話<small>通話の記録と受付票が残る</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 設計 -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">電話ならではの設計</p>
+          <h2>「間」をあけない。止まっても困らない。任せすぎない。</h2>
+          <p class="intro">
+            電話はチャットと違い、数秒の沈黙で相手が不安になります。また、AI
+            や回線が止まった瞬間に電話がつながらなくなっては本末転倒です。この 3
+            点を最初から設計に入れます。
+          </p>
+          <div class="pillars">
+            <div class="pillar">
+              <h3>間をあけない</h3>
+              <ul>
+                <li>
+                  ごあいさつ・録音のお知らせ・「確認いたします」などの決まった言葉は、Gemini
+                  で前もって音声にしておき、すぐに流す
+                </li>
+                <li>返答は 1 文できるたびに声にして、話し始めを早める</li>
+                <li>
+                  声は Gemini 3.8 Flash TTS を基本に、会話向けの軽量版（Flash
+                  Lite TTS）とも聞き比べ、速さと聞きやすさで選ぶ
+                </li>
+                <li>
+                  Opus 5.5
+                  の考える深さを電話向けに調整する。必要なら高速モードも使う
+                </li>
+                <li>
+                  試験運用で「相手が話し終えてから返答が聞こえるまで」を実測し、合格ラインを満たすまで本番に進まない
+                </li>
+              </ul>
+            </div>
+            <div class="pillar">
+              <h3>止まっても困らない</h3>
+              <ul>
+                <li>
+                  AI・回線・外部サービスのどれかが応答しないときは、自動で留守番電話か、指定の転送先へ切り替える
+                </li>
+                <li>
+                  当社が稼働状況を監視し、異常があれば貴社の担当者へ連絡する（監視の対応時間は契約で取り決め）
+                </li>
+                <li>
+                  AI
+                  へ回すのは「時間外だけ」から始め、昼間の電話は今の運用のまま残す
+                </li>
+              </ul>
+            </div>
+            <div class="pillar never">
+              <h3>AI に任せないこと</h3>
+              <ul>
+                <li>
+                  料金・契約・人員の確約（「担当者から折り返します」と伝えるまで）
+                </li>
+                <li>事故・現場のトラブル・苦情への対応</li>
+                <li>採否や配置の判断</li>
+                <li>
+                  個人情報の扱い: 冒頭で録音と AI
+                  応対をお知らせする／応募者の情報は採用連絡の目的に限る／通話記録の保存場所と期間を取り決める／通話は海外の
+                  AI
+                  事業者の基盤でも処理されるため、個人情報保護法上の扱いと、学習に使われない条件を契約前に確認し、書面に残す
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. 進め方 -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">進め方</p>
+          <h2>小さく試してから広げる、4 段階</h2>
+          <p class="intro">
+            いきなり代表電話のすべてを AI
+            にするのではなく、困りごとが大きく失敗の影響が小さい「営業時間外の電話」から始めます。各段階の終わりに、続けるかどうかを一緒に判断します。
+          </p>
+          <div class="steps">
+            <article class="step">
+              <div class="step-bar">
+                <span class="no">STEP 1</span><span class="dur">2 週間</span>
+              </div>
+              <h3>受電診断</h3>
+              <ul>
+                <li>着信を記録（件数・時間帯・用件・かかった時間）</li>
+                <li>今の対応手順と、転送先・通知先を伺う</li>
+                <li>AI に任せる範囲と応答の台本を設計</li>
+              </ul>
+              <p class="gate">
+                <b>判断すること</b>AI
+                化する価値があるか。既製のサービスで足りるか
+              </p>
+            </article>
+            <article class="step pilot">
+              <div class="step-bar">
+                <span class="no">STEP 2</span
+                ><span class="dur">構築 4 週＋試験 4 週</span>
+              </div>
+              <h3>試験運用</h3>
+              <ul>
+                <li>代表番号の「営業時間外」の電話だけを AI へ転送</li>
+                <li>用件は「応募」と「当日の連絡」の 2 つ</li>
+                <li>受付票と通知、障害時の自動切替まで用意</li>
+                <li>
+                  回線の開設には登記簿などの書類と住所確認が要るため、STEP 1
+                  の間に手続きを始める
+                </li>
+              </ul>
+              <p class="gate">
+                <b>合格ライン（事前に合意）</b
+                >返答までの時間・聞き取りの正確さ・担当者の手直しの少なさ
+              </p>
+            </article>
+            <article class="step">
+              <div class="step-bar">
+                <span class="no">STEP 3</span><span class="dur">1〜2 か月</span>
+              </div>
+              <h3>本番拡大</h3>
+              <ul>
+                <li>営業時間内の一次受付に広げる</li>
+                <li>お客様のご依頼・その他の用件を追加</li>
+                <li>必要に応じて拠点の番号にも展開</li>
+              </ul>
+              <p class="gate"><b>判断すること</b>どの番号・用件まで広げるか</p>
+            </article>
+            <article class="step">
+              <div class="step-bar">
+                <span class="no">STEP 4</span><span class="dur">毎月</span>
+              </div>
+              <h3>運用と改善</h3>
+              <ul>
+                <li>通話記録を見て、聞き方・答え方を直す</li>
+                <li>募集内容や拠点の変更を反映</li>
+                <li>月次レポート（件数・用件・転送率）</li>
+              </ul>
+              <p class="gate">
+                <b>判断すること</b>任せる範囲を増やすか、減らすか
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. 費用 -->
+      <section>
+        <div class="wrap">
+          <p class="kicker">費用</p>
+          <h2>段階ごとにお支払いいただく形です</h2>
+          <p class="intro">
+            次の段階に進むかどうかは、前の段階の結果を見てからお決めいただけます。金額はすべて税別です。
+          </p>
+          <table class="price">
+            <thead>
+              <tr>
+                <th scope="col">項目</th>
+                <th scope="col">内容</th>
+                <th scope="col">費用（税別）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="item">STEP 1　受電診断</td>
+                <td>
+                  着信の記録と分析、AI
+                  に任せる範囲の決定、応答の台本、効果の試算。受電診断レポートとしてお渡しします
+                </td>
+                <td class="yen">
+                  30万円<small
+                    >STEP 2 に進む場合は、全額を構築費に充当します</small
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="item">STEP 2　試験運用</td>
+                <td>
+                  回線の設定、音声認識・Opus 5.5・Gemini の接続、2
+                  用件の応答、受付票と通知、障害時の自動切替、合格ラインの判定
+                </td>
+                <td class="yen">
+                  150万円<small
+                    >構築 4 週＋試験 4
+                    週。試験期間中の監視と調整を含みます（通話の実費は別）</small
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="item">STEP 3　本番拡大</td>
+                <td>営業時間内への拡大、用件の追加、拠点番号への展開</td>
+                <td class="yen">
+                  80万円〜<small
+                    >広げる範囲により、STEP 2 の結果を見てお見積りします</small
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td class="item">STEP 4　月額運用</td>
+                <td>
+                  稼働の監視、応答の改善、募集・拠点情報の更新、月次レポート
+                </td>
+                <td class="yen">月 8万円<small>本番開始の翌月から</small></td>
+              </tr>
+              <tr class="actual">
+                <td class="item">通話の実費</td>
+                <td>
+                  音声認識と
+                  AI（Claude・Gemini）の利用料は、当社が利益を乗せずに実費のままご請求します。電話回線・電話番号・代表番号からの転送区間の通話料は、各通信事業者から貴社へ直接請求されます
+                </td>
+                <td class="yen">
+                  実費精算<small
+                    >目安は 1 通話（3 分）あたり 30〜50 円（回線・音声認識・AI
+                    の合計）</small
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="honest">
+            受電診断の結果、月額数千円から使える既製の AI
+            電話サービスで足りると分かった場合は、そのようにお伝えし、STEP 2
+            には進みません。個別に組み立てる価値があるのは、応募・当日連絡・ご依頼が混ざる代表電話を、貴社の運用に合わせて振り分けたい場合です。
+          </p>
+
+          <div class="calc" aria-labelledby="calcTitle">
+            <h3 id="calcTitle">効果の試算（数字を変えてお試しいただけます）</h3>
+            <p class="note" style="margin-bottom: 14px">
+              初期値はすべて仮定です。受電診断で実際の数字に置き換えます。営業日は月
+              22 日、時間外は月 30 日として計算しています。
+            </p>
+            <div class="calc-grid">
+              <div>
+                <label
+                  >営業時間内の着信<input
+                    type="number"
+                    id="inDay"
+                    value="40"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                  />
+                  <small>件／日（仮定）</small></label
+                >
+                <label
+                  >営業時間外の着信<input
+                    type="number"
+                    id="outDay"
+                    value="8"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                  />
+                  <small
+                    >件／日（仮定）。今は留守番電話や翌日の折り返しになっている電話</small
+                  ></label
+                >
+                <label
+                  >1 件あたりの対応時間<input
+                    type="number"
+                    id="mins"
+                    value="4"
+                    min="0"
+                    step="0.5"
+                    inputmode="decimal"
+                  />
+                  <small
+                    >分（仮定）。通話と、メモ・連絡にかかる時間の合計</small
+                  ></label
+                >
+                <label
+                  >AI だけで受付が完了する割合<input
+                    type="number"
+                    id="ratio"
+                    value="50"
+                    min="0"
+                    max="100"
+                    step="5"
+                    inputmode="numeric"
+                  />
+                  <small>％（仮定）。残りは担当者へ転送</small></label
+                >
+                <label
+                  >担当者の時間単価<input
+                    type="number"
+                    id="wage"
+                    value="2500"
+                    min="0"
+                    step="100"
+                    inputmode="numeric"
+                  />
+                  <small
+                    >円／時間（仮定）。社会保険料などを含む会社負担</small
+                  ></label
+                >
+              </div>
+              <div class="out" aria-live="polite">
+                <div>
+                  <span>AI が応対する電話</span
+                  ><output id="oCalls">0<small>件／月</small></output>
+                </div>
+                <div>
+                  <span>時間外に新たに受けられる電話</span
+                  ><output id="oAfter">0<small>件／月</small></output>
+                </div>
+                <div>
+                  <span>担当者の電話対応時間の削減</span
+                  ><output id="oHours">0<small>時間／月</small></output>
+                </div>
+                <div>
+                  <span>削減時間の金額換算</span
+                  ><output id="oYen">0<small>円／月</small></output>
+                </div>
+                <p class="note">
+                  金額換算は営業時間内の削減分だけで計算しています。時間外に受けられるようになった応募やご依頼の価値は含めていません。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. 次の一歩 -->
+      <section class="last">
+        <div class="wrap">
+          <p class="kicker">次の一歩</p>
+          <h2>まずは 30 分、今の電話の様子を伺わせてください</h2>
+          <div class="next">
+            <div>
+              <p style="margin-bottom: 14px">
+                お打ち合わせで確認したいことは次のとおりです。分かる範囲で構いません。
+              </p>
+              <ul class="checks">
+                <li>代表電話の 1 日の着信件数と、多い時間帯</li>
+                <li>用件の内訳（応募・隊員からの連絡・ご依頼・その他）</li>
+                <li>上番・下番の報告を電話で受けているか</li>
+                <li>営業時間外の電話の今の扱い（留守番電話・携帯転送など）</li>
+                <li>電話の契約先と、電話機・転送の設定を管理している方</li>
+                <li>
+                  受付票の通知先（社内チャット・メールなど）と、至急時の転送先
+                </li>
+                <li>
+                  応募者や登録者の個人情報について、社内で決めているルール
+                </li>
+              </ul>
+            </div>
+            <aside class="contact">
+              <p><b>ご連絡先</b></p>
+              <p class="sign">
+                鈴木 章裕
+                <small>株式会社コミクス 代表取締役</small>
+              </p>
+              <ul>
+                <li>メール: suzuki@comix.co.jp</li>
+                <li>
+                  30 分 Zoom の日程調整:
+                  <a href="https://comix.eeasy.jp/suzuki/online"
+                    >https://comix.eeasy.jp/suzuki/online</a
+                  >
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          株式会社コミクス｜生成 AI 活用顧問 支援実績 304
+          社（2026年9月末時点）｜https://www.comix.co.jp/
+        </p>
+        <p>
+          本資料はお打ち合わせ前の方向性です。サービス名・料金・仕様は
+          2026年10月時点の情報にもとづき、正式なお見積りでは最新の条件で確定します。
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var ids = ["inDay", "outDay", "mins", "ratio", "wage"];
+        var fmt = new Intl.NumberFormat("ja-JP");
+        function num(id) {
+          var v = parseFloat(document.getElementById(id).value);
+          return isFinite(v) && v > 0 ? v : 0;
+        }
+        function setOut(id, value, unit) {
+          var el = document.getElementById(id);
+          el.innerHTML =
+            fmt.format(Math.round(value)) + "<small>" + unit + "</small>";
+        }
+        function calc() {
+          var inDay = num("inDay");
+          var outDay = num("outDay");
+          var mins = num("mins");
+          var ratio = Math.min(num("ratio"), 100) / 100;
+          var wage = num("wage");
+          var inMonth = inDay * 22;
+          var outMonth = outDay * 30;
+          var hours = (inMonth * mins * ratio) / 60;
+          setOut("oCalls", inMonth + outMonth, "件／月");
+          setOut("oAfter", outMonth, "件／月");
+          setOut("oHours", hours, "時間／月");
+          setOut("oYen", hours * wage, "円／月");
+        }
+        ids.forEach(function (id) {
+          document.getElementById(id).addEventListener("input", calc);
+        });
+        calc();
+      })();
+    </script>
+  </body>
+</html>
